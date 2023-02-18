@@ -1,8 +1,8 @@
 use reqwest::{Client, Url};
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
-type DateTime = chrono::DateTime<chrono::Utc>;
-use chrono::serde::ts_seconds;
 
+pub mod album;
+pub mod browse;
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Response<T> {
     pub success: bool,
@@ -105,44 +105,5 @@ impl SynoService {
             Body::Error(e) => Err(SynoError::Syno(e)),
             Body::Data(d) => Ok(d),
         }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct BrowseItemListRequest {
-    pub offset: u64,
-    pub limit: u64,
-    pub start_time: DateTime,
-    pub end_time: DateTime,
-}
-
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ItemList{
-    pub list: Vec<BrowseItem>
-}
-
-
-#[derive(Default, Debug, Clone, PartialEq, Serialize, Deserialize)]
-pub struct BrowseItem {
-    pub id: i64,
-    pub filename: String,
-    pub filesize: u64,
-    #[serde(with = "ts_seconds")]
-    pub time: DateTime,
-    #[serde(with = "ts_seconds")]
-    pub indexed_time: DateTime,
-    pub owner_user_id: i64,
-    pub folder_id: i64,
-    #[serde(rename = "type")]
-    pub type_field: String,
-}
-
-impl Request for BrowseItemListRequest {
-    type Response = ItemList;
-
-    fn query(&self) -> String {
-        format!("api=SYNO.FotoTeam.Browse.Item&method=list&version=1&offset={}&limit={}&start_time={}&end_time={}",
-            self.offset, self.limit, self.start_time.timestamp(), self.end_time.timestamp()
-        )
     }
 }
