@@ -3,6 +3,10 @@ use serde::{Serialize, Deserialize, de::DeserializeOwned};
 
 pub mod album;
 pub mod browse;
+
+#[cfg(test)]
+mod test;
+
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
 pub struct Response<T> {
     pub success: bool,
