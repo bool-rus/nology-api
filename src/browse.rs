@@ -26,8 +26,8 @@ pub struct BrowseItem {
 
 #[derive(Debug, Clone, Default)]
 pub struct ListRequest {
-    pub offset: u64,
-    pub limit: u64,
+    pub offset: u32,
+    pub limit: u32,
     pub start_time: DateTime,
     pub end_time: DateTime,
 }
@@ -39,5 +39,21 @@ impl Request for ListRequest {
         let start_time = start_time.timestamp();
         let end_time = end_time.timestamp();
         format!("api=SYNO.FotoTeam.Browse.Item&method=list&version=1&offset={offset}&limit={limit}&start_time={start_time}&end_time={end_time}")
+    }
+}
+
+#[derive(Debug, Clone)]
+pub struct AlbumRequest {
+    pub offset: u32,
+    pub limit: u32,
+    pub album_id: i64,
+}
+
+impl Request for AlbumRequest {
+    type Response = ListResponse;
+
+    fn query(&self) -> String {
+        let Self { offset, limit, album_id } = self;
+        format!("api=SYNO.Foto.Browse.Item&method=list&version=1&offset={offset}&limit={limit}&album_id={album_id}")
     }
 }
