@@ -30,7 +30,7 @@ pub struct CreateResponse {
     pub error_list: Vec<Value>,
 }
 
-#[derive(Debug, Clone, Default)]
+#[derive(Debug, Clone)]
 pub struct CreateRequest {
     pub name: String,
     pub items: Vec<i64>,
@@ -55,6 +55,37 @@ fn test_parse_create_response() {
 }
 
 
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct AddItemsResponse {
+    pub error_list: Vec<Value>,
+}
+
+#[derive(Debug, Clone)]
+pub enum Destination {
+    Owned(i64),
+    Shared(String)
+}
+
+#[derive(Debug, Clone)]
+pub struct AddItemsRequest {
+    destination: Destination,
+    items: Vec<i64>
+}
+
+impl Request for AddItemsRequest {
+    type Response = AddItemsResponse;
+
+    fn query(&self) -> String {
+        let destination = match &self.destination {
+            Destination::Owned(id) => format!("id={id}"),
+            Destination::Shared(token) => format!("passphrase={token}"),
+        };
+        format!("api=SYNO.Foto.Browse.NormalAlbum&method=add_item&version=1&item={:?}&{destination}", self.items)
+    }
+}
+
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct ListResponse {
     pub list: Vec<Album>,
@@ -64,15 +95,13 @@ pub struct ListResponse {
 pub struct ListRequest {
     pub offset: u32,
     pub limit: u32,
-    pub sort_by: String,
-    pub sort_direction: String,
 }
 
 impl Request for ListRequest {
     type Response = ListResponse;
     fn query(&self) -> String {
-        let Self { offset, limit, sort_by, sort_direction } = self;
-        format!("api=SYNO.Foto.Browse.Album&method=list&version=2&offset={offset}&limit={limit}&sort_by={sort_by}&sort_direction={sort_direction}")
+        let Self { offset, limit } = self;
+        format!("api=SYNO.Foto.Browse.Album&method=list&version=2&offset={offset}&limit={limit}")
     }
 }
 
@@ -81,4 +110,19 @@ fn test_parse_album_list_response() {
     let response = include_str!("test/album-list-response.json");
     let parsed: Response<ListResponse> = serde_json::from_str(response).unwrap();
     assert!(parsed.body.as_result().is_ok());
+}
+
+#[derive(Default, Debug, Clone)]
+pub struct ListSharedRequest {
+    pub offset: u32,
+    pub limit: u32,
+}
+
+impl Request for ListSharedRequest {
+    type Response = ListResponse;
+
+    fn query(&self) -> String {
+        let Self { offset, limit } = self;
+        format!("api=SYNO.Foto.Sharing.Misc&method=list_shared_with_me_album&version=2&offset={offset}&limit={limit}")
+    }
 }

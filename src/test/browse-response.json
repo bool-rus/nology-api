@@ -1,0 +1,41 @@
+{
+    "success": true,
+    "data": {
+      "list": [
+        {
+          "id": 163601,
+          "filename": "IMG_20230215_223135.MOV",
+          "filesize": 60022084,
+          "time": 1676500295,
+          "indexed_time": 1676501581103,
+          "owner_user_id": 0,
+          "folder_id": 31,
+          "type": "video",
+          "additional": {}
+        },
+        {
+          "id": 163600,
+          "filename": "IMG_20230215_184641.jpg",
+          "filesize": 56653,
+          "time": 1676486801,
+          "indexed_time": 1676492425326,
+          "owner_user_id": 0,
+          "folder_id": 31,
+          "type": "photo",
+          "additional": {}
+        },
+        {
+          "id": 163599,
+          "filename": "IMG_20230215_161222.jpg",
+          "filesize": 84854,
+          "time": 1676477542,
+          "indexed_time": 1676478033643,
+          "owner_user_id": 0,
+          "folder_id": 31,
+          "type": "photo",
+          "additional": {}
+        }
+      ]
+    }
+  }
+  
