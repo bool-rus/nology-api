@@ -4,6 +4,9 @@ use thiserror::Error;
 
 pub mod album;
 pub mod browse;
+mod entity;
+
+pub use entity::*;
 
 #[cfg(test)]
 mod test;
