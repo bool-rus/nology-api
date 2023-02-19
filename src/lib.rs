@@ -1,5 +1,6 @@
 use reqwest::{Client, Url};
 use serde::{Serialize, Deserialize, de::DeserializeOwned};
+use thiserror::Error;
 
 pub mod album;
 pub mod browse;
@@ -30,7 +31,8 @@ impl<T> Body<T> {
     }
 }
 
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Error)]
+#[error("Syno returned error with code: {code}")]
 pub struct ErrorResponse {
     code: u32,
 }
@@ -59,22 +61,14 @@ impl Request for LoginRequest {
     }
 }
 
-#[derive(Debug)]
+#[derive(Error, Debug)]
 pub enum SynoError {
-    Syno(ErrorResponse),
-    Reqwest(reqwest::Error),
+    #[error("Syno error: {0:?}")]
+    Syno(#[from] ErrorResponse),
+    #[error("Syno error: {0}")]
+    Reqwest(#[from] reqwest::Error),
 }
 
-impl From<reqwest::Error> for SynoError {
-    fn from(value: reqwest::Error) -> Self {
-        Self::Reqwest(value)
-    }
-}
-impl From<ErrorResponse> for SynoError {
-    fn from(value: ErrorResponse) -> Self {
-        Self::Syno(value)
-    }
-}
 
 type SynoResult<T> = Result<T, SynoError>;
 
