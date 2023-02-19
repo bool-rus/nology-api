@@ -1,7 +1,11 @@
 [package]
-name = "syno-api"
+name = "nology-api"
 version = "0.0.1"
 edition = "2021"
+license = "MIT"
+keywords = ["nas", "synology", "xpenology"]
+description = "Rust API client for synology/xpenology nas"
+repository = "https://github.com/bool-rus/nology-api"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
